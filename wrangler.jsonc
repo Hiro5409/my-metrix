@@ -1,9 +1,9 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "account_id": "dd56d486a5d095ec8fef1bfbd0b52fcf",
   "name": "my-metrix",
   "main": "src/index.ts",
   "compatibility_date": "2026-09-18",
+  "preview_urls": false,
   "vars": {
     "APP_URL": "https://my-metrix.delamtt28.workers.dev",
   },

@@ -7,7 +7,7 @@ Withingsの身体測定データと体重トレンドを扱う、セルフホス
 ## アーキテクチャ
 
 - HTTP境界とRPC契約はHonoが担います。
-- D1のスキーマとマイグレーションはDrizzleが管理します。
+- D1のスキーマとマイグレーションはDrizzle ORM 1.0 RCが管理します。
 - 測定データとWithings情報の読み取りは、Better AuthのAPIキーで保護します。
 - APIキー管理とWithings接続の操作は、専用の管理トークンで保護します。
 - WithingsのOAuthトークンは暗号化して保存します。
@@ -30,11 +30,12 @@ https://<worker-origin>/oauth/withings/callback
 
 ## セットアップ
 
-依存関係をインストールし、ローカル用のシークレットファイルを作成します。
+依存関係をインストールし、git管理外のローカル用・本番用シークレットファイルを作成します。
 
 ```bash
 bun install --frozen-lockfile
 cp .dev.vars.example .dev.vars
+cp .dev.vars.example .prod.vars
 cp .setup.env.example .setup.env
 ```
 
@@ -44,7 +45,7 @@ cp .setup.env.example .setup.env
 bunx wrangler d1 create my-metrix
 ```
 
-`.dev.vars`で使うシークレットは、それぞれ独立して生成します。
+認証・暗号化・Webhook用のシークレットは、`.dev.vars`と`.prod.vars`で別々の値を生成します。
 
 ```bash
 openssl rand -hex 32 # ADMIN_TOKEN
@@ -53,7 +54,7 @@ openssl rand -base64 32 # TOKEN_ENCRYPTION_KEY
 openssl rand -hex 32 # WEBHOOK_SECRET
 ```
 
-WithingsのクライアントIDとシークレットも`.dev.vars`へ設定します。`wrangler.jsonc`の`APP_URL`には、デプロイ先Workerのオリジンを指定します。
+WithingsのクライアントIDとシークレットは両方のファイルへ設定します。`wrangler.jsonc`の`APP_URL`には、デプロイ先Workerのオリジンを指定します。
 
 ローカルのD1へマイグレーションを適用し、Workerを起動します。
 
@@ -65,7 +66,7 @@ bun run dev
 本番では、シークレットの登録、リモートD1へのマイグレーション、Workerのデプロイを順に実行します。
 
 ```bash
-bunx wrangler secret bulk .dev.vars
+bunx wrangler secret bulk .prod.vars
 bun run db:migrate:remote
 bun run deploy
 ```
@@ -90,6 +91,7 @@ bun run cli -- keys create --name my-client
 - `GET /api/health`は公開されています。
 - `/api/admin/*`には管理用Bearerトークンが必要です。
 - `/api/measurements/*`と`/api/withings/*`にはBetter AuthのAPIキーが必要です。
+- `/api/measurements/latest`は、購読後の測定通知を同期するまでは`latest: null`を返します。
 - `/oauth/withings/callback`は、有効期限の短いOAuthフローを完了します。
 - `/webhooks/withings/:secret`はWithingsからの通知を受け取ります。
 

@@ -2,6 +2,7 @@ node_modules
 .wrangler
 worker-configuration.d.ts
 .dev.vars
+.prod.vars
 .setup.env
 dist
 *.local

@@ -42,8 +42,8 @@ cp .dev.vars.example .prod.vars
 cp .setup.env.example .setup.env
 ```
 
-Create the D1 database when deploying a fork, then put the returned database ID in
-`wrangler.jsonc`:
+When deploying a fork, set `account_id` in `wrangler.jsonc` to the target Cloudflare
+account, create the D1 database, then replace `database_id` with the returned ID:
 
 ```bash
 bunx wrangler d1 create my-metrix

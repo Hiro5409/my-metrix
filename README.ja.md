@@ -39,7 +39,7 @@ cp .dev.vars.example .prod.vars
 cp .setup.env.example .setup.env
 ```
 
-フォークした環境へ初めてデプロイする場合はD1データベースを作成し、返されたデータベースIDを`wrangler.jsonc`に設定します。
+フォークした環境へ初めてデプロイする場合は、`wrangler.jsonc`の`account_id`をデプロイ先のCloudflareアカウントに合わせます。続けてD1データベースを作成し、返されたIDを`database_id`へ設定します。
 
 ```bash
 bunx wrangler d1 create my-metrix

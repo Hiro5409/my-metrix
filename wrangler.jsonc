@@ -1,0 +1,26 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "account_id": "dd56d486a5d095ec8fef1bfbd0b52fcf",
+  "name": "my-metrix",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-18",
+  "vars": {
+    "APP_URL": "https://my-metrix.delamtt28.workers.dev",
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "my-metrix",
+      "database_id": "5a531c52-6fe1-4508-9d3e-e1828e33891f",
+      "migrations_dir": "drizzle",
+      "migrations_pattern": "drizzle/*/migration.sql",
+    },
+  ],
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "invocation_logs": false,
+      "head_sampling_rate": 1,
+    },
+  },
+}
